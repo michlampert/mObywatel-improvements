@@ -7,7 +7,7 @@
         name="OpenStreetMap"
 
       ></l-tile-layer>
-        <l-marker :lat-lng="[lat, lon]"></l-marker>
+        <l-circle-marker :lat-lng="[lat, lon]" :color="currentLocationColor"></l-circle-marker>
 
         <l-marker v-for="location in locations" :lat-lng="[location.lat, location.lon]">
             <l-popup>
@@ -21,7 +21,9 @@
 
 <script lang="ts" setup>
 import "leaflet/dist/leaflet.css";
-import { LMap, LTileLayer, LMarker, LPopup } from "@vue-leaflet/vue-leaflet";
+import { LMap, LTileLayer, LMarker, LPopup, LCircleMarker } from "@vue-leaflet/vue-leaflet";
+
+let currentLocationColor = "red";
 
 const props = defineProps({
     zoom: {
