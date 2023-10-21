@@ -2,7 +2,7 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-title>Tab 2</ion-title>
+        <ion-title>SOR</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true">
