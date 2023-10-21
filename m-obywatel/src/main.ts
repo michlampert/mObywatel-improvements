@@ -1,7 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router';
-import PrimeVue from 'primevue/config';
 import { IonicVue } from '@ionic/vue';
 
 /* Core CSS required for Ionic components to work properly */
@@ -30,7 +29,6 @@ const app = createApp(App)
       mode: 'ios',
     }
   )
-  .use(PrimeVue)
   .use(router);
 
 router.isReady().then(() => {

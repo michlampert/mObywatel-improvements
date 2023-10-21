@@ -2,25 +2,27 @@
     <div class="dropdown" v-if="options">
 
         <!-- Dropdown Input -->
-        <input class="dropdown-input" :name="name" @focus="showOptions()" @blur="exit()" v-model="searchFilter"
-            :disabled="disabled" :placeholder="placeholder" />
+        <ion-input class="dropdown-input" :name="name" @focus="showOptions()" @blur="exit()" v-model="searchFilter"
+            :placeholder="placeholder" fill="outline"/>
 
         <!-- Dropdown Menu -->
-        <div class="dropdown-content" v-show="optionsShown">
-            <div class="dropdown-item" @mousedown="selectOption(option)" v-for="(option, index) in filteredOptions()"
+        <ion-list class="dropdown-content" v-show="optionsShown">
+            <ion-item class="dropdown-item" @mousedown="selectOption(option)" v-for="(option, index) in filteredOptions()"
                 :key="index">
                 {{ option.name || option.id || '-' }}
-            </div>
-        </div>
+            </ion-item>
+        </ion-list>
     </div>
 </template>
   
 <script lang="ts" setup>
 import { PropType, Ref, ref, watch } from 'vue';
+import { IonInput, IonList, IonItem } from '@ionic/vue';
 
 const selected: Ref<{ name: string, id: string } | undefined> = ref(undefined)
 const optionsShown: Ref<boolean> = ref(false)
 const searchFilter: Ref<string> = ref("")
+
 
 
 const emit = defineEmits(['selected', 'filter'])
@@ -106,32 +108,14 @@ watch(
     margin: auto;
 
     .dropdown-input {
-        background: #fff;
         cursor: pointer;
-        border: 1px solid #e7ecf5;
-        border-radius: 3px;
-        color: #333;
         display: block;
-        font-size: .8em;
-        padding: 6px;
-        min-width: 250px;
-        max-width: 250px;
-
-        &:hover {
-            background: #f8f8fa;
-        }
     }
 
     .dropdown-content {
         position: absolute;
-        background-color: #fff;
-        min-width: 248px;
-        max-width: 248px;
-        max-height: 248px;
-        border: 1px solid #e7ecf5;
-        box-shadow: 0px -8px 34px 0px rgba(0, 0, 0, 0.05);
-        overflow: auto;
-        z-index: 1;
+        overflow: visible;
+        z-index: 10000;
 
         .dropdown-item {
             color: black;
@@ -151,4 +135,5 @@ watch(
     .dropdown:hover .dropdowncontent {
         display: block;
     }
-}</style>
+}
+</style>

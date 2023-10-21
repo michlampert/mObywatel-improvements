@@ -6,7 +6,7 @@
           Najbliższe terminy
         </template>
         <template v-slot:alert>
-          <ion-icon :icon="notifications" size="large" style="margin-bottom: 0px"></ion-icon>
+          <Alert :message="'Zwolnił się termin do lekarza'"></Alert>
         </template>
       </Toolbar>
     </ion-header>
@@ -33,12 +33,10 @@
             <div slot="label">Usługa</div>
           </ion-input>
         </ion-item>
-        <!-- <ion-item>
-          <Dropdown :options="[{ id: 1, name: 'Option 1' }, { id: 2, name: 'Option 2' }]" v-on:selected="treatment"
-            v-on:filter="treatments" :disabled="false" name="zipcode" :maxItem="10"
-            placeholder="Please select an option">
-          </Dropdown>
+        <!-- <ion-item style="height: 1009px;">
+          <Dropdown :options="treatments"></Dropdown>
         </ion-item> -->
+
 
         <ion-item>
           <ion-input label-placement="floating" placeholder="np. Warszawa" v-model="address">
@@ -77,8 +75,8 @@
 
       <ion-list>
         <ion-item lines="none" v-for=" clinic  in  clinics ">
-          <Place :date="clinic.date" :city="clinic.address.city" :distance="clinic.distance"
-            :name="clinic.name" :telephone="clinic.phone" :address="clinic.address.details" :webpage="clinic.webpage"
+          <Place :date="clinic.date" :city="clinic.address.city" :distance="clinic.distance" :name="clinic.name"
+            :telephone="clinic.phone" :address="clinic.address.details" :webpage="clinic.webpage"
             :current-localization="currentLocation" :localization="clinic.localization">
           </Place>
         </ion-item>
@@ -98,16 +96,15 @@ import { Ref, onMounted, ref } from "vue";
 import { Clinic } from "@/api/model"
 import { getClinics, getCurrentLocation, getPossibleTreatments } from "@/api/api"
 import { localizationToAddress } from "@/api/utils";
-import Dropdown from "@/components/Dropdown.vue";
+import Alert from "@/components/Alert.vue"
 
 import { IonList, IonItem, IonSegment, IonSegmentButton, IonIcon, IonButton, IonText, IonInput, IonCard } from "@ionic/vue";
-// import Dropdown from 'vue-simple-search-dropdown';
 
 const clinics: Ref<Clinic[]> = ref([])
 const address: Ref<string> = ref("")
 const loading: Ref<boolean> = ref(false)
 const treatment: Ref<string> = ref("")
-const treatments: Ref<{ name: string, code: string }[]> = ref([])
+const treatments: Ref<{ name: string, id: string }[]> = ref([])
 
 const currentLocation = {
   latitude: 54.21093325,
@@ -135,7 +132,7 @@ function setCurrentAddress() {
 
 onMounted(() => {
   getPossibleTreatments()
-    .then(val => treatments.value = val.map(val => ({ name: val, code: val })))
+    .then(val => treatments.value = val.map(val => ({ name: val, id: val })))
 })
 
 </script>

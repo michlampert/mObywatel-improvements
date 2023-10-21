@@ -4,7 +4,7 @@
             <ion-card-title class="capitalize">{{ name?.toLowerCase() }}</ion-card-title>
             <ion-card-subtitle class="capitalize">
                 <ion-icon :icon="map"></ion-icon>
-                {{ city?.toLowerCase() }}, {{ distance }}km
+                {{ city?.toLowerCase() }}, {{ Math.round(distance ?? 0) }}km
             </ion-card-subtitle>
             <ion-card-subtitle v-if="date">
                 <ion-icon :icon="calendarNumber"></ion-icon>
