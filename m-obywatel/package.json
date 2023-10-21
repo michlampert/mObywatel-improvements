@@ -20,8 +20,10 @@
     "@ionic/cli": "^7.1.1",
     "@ionic/vue": "^7.0.0",
     "@ionic/vue-router": "^7.0.0",
+    "@types/papaparse": "^5.3.10",
     "ionicons": "^7.0.0",
     "sass": "^1.69.4",
+    "papaparse": "^5.4.1",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6"
   },
