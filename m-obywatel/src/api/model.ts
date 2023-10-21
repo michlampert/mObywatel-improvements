@@ -12,6 +12,7 @@ export interface Place {
     name: string,
     desc?: string,
     localization: Localization,
+    distance: number,
     address: Address
     webpage?: string,
     phone?: string,
