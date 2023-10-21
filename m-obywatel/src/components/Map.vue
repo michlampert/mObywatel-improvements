@@ -21,7 +21,7 @@
 
 <script lang="ts" setup>
 import "leaflet/dist/leaflet.css";
-import { LMap, LTileLayer, LMarker, LPopup, LTooltip } from "@vue-leaflet/vue-leaflet";
+import { LMap, LTileLayer, LMarker, LPopup } from "@vue-leaflet/vue-leaflet";
 
 const props = defineProps({
     zoom: {
