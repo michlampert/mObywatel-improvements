@@ -65,10 +65,10 @@
       </ion-list>
 
       <ion-list>
-        <ion-item lines="none" v-for="clinic in clinics">
-          <Place :date="clinic.date" :city="clinic.address.city" :distance="123" :name="clinic.name"
+        <ion-item  lines="none" v-for="clinic in clinics">
+          <Place :date="clinic.date" :city="clinic.address.city" :distance="clinic.distance" :name="clinic.name"
             :telephone="clinic.phone" :address="clinic.address.details" :webpage="clinic.webpage"
-            :localization="{ latitude: 52.0, longitude: 24.0 }">
+            :current-localization="currentLocation" :locations="clinic.localization">
           </Place>
         </ion-item>
       </ion-list>
@@ -93,8 +93,13 @@ import { IonList, IonItem, IonSegment, IonSegmentButton, IonIcon, IonButton, Ion
 const clinics: Ref<Clinic[]> = ref([])
 const address: Ref<string> = ref("")
 
+const currentLocation = {
+  latitude: 54.21093325,
+  longitude: 22.000529771276238,
+}
+
 function search() {
-  getClinics({ longitude: 52, latitude: 22 }, "ODDZIAŁ CHIRURGICZNY OGÓLNY", 10000000)
+  getClinics(currentLocation, "ODDZIAŁ CHIRURGICZNY OGÓLNY", 100)
     .then(value => {
       clinics.value = value
     })

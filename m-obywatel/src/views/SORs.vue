@@ -13,7 +13,7 @@
       </ion-header>
 
       <ExploreContainer name="Tab 2 page" />
-      <Map :zoom="zoom" :lat="50.21093325" :lon="19.000529771276238" :locations="locations"/>
+      <Map :zoom="zoom" :current-location=" { latitude: 50.2, longitude: 19 }" :locations="locations"/>
     </ion-content>
   </ion-page>
 
@@ -25,17 +25,15 @@ import ExploreContainer from '@/components/ExploreContainer.vue';
 
 import Map from '@/components/Map.vue'
 
+import { Localization } from "@/api/model"
+
 let zoom = 13;
 
-let locations = [{
-  lat: 50.21093325,
-  lon: 18.99,
-  name: 'test',
-}, {
-  lat: 50.21093325,
-  lon: 19.01,
-  name: 'test2',
-}]
+let locations = {
+    latitude: 50.21093325,
+    longitude: 19.000529771276238,
+    name: 'test',
+  }
 
 
 </script>

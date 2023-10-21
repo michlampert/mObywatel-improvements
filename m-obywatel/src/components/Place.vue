@@ -19,8 +19,8 @@
             </ion-label>
             <ion-label class="capitalize">
                 <ion-icon :icon="location"></ion-icon>
-                <a v-if="!localization">{{ ` ${city}, ${address}`.toLowerCase() }}</a>
-                <a v-if="localization" href="geo:{{localization?.longitude}},{{localization?.longitude}}" target="_blank">{{ ` ${city},
+                <a v-if="!currentLocalization">{{ ` ${city}, ${address}`.toLowerCase() }}</a>
+                <a v-if="currentLocalization" href="geo:{{localization?.longitude}},{{localization?.longitude}}" target="_blank">{{ ` ${city},
                                     ${address}`.toLowerCase() }}</a>
             </ion-label>
             <ion-label v-if="webpage">
@@ -28,13 +28,13 @@
                 <a target="_blank" :href="webpage">{{ " " }}{{ webpage }}</a>
             </ion-label>
         </ion-card-content>
-        <ion-accordion-group>
+        <ion-accordion-group @ionChange="dispatchResize">
             <ion-accordion value="first">
                 <ion-item slot="header" color="light">
                     <ion-label>pokaż na mapie</ion-label>
                 </ion-item>
                 <div slot="content">
-                    <Map></Map>
+                    <Map :zoom="10" :currentLocation="currentLocalization" :locations="locations"/>
                 </div>
             </ion-accordion>
         </ion-accordion-group>
@@ -57,8 +57,13 @@ const props = defineProps({
     telephone: String,
     address: String,
     webpage: String,
-    localization: Object as PropType<Localization>,
+    currentLocalization: Object as PropType<Localization>,
+    locations: Object as PropType<Localization>,
 })
+
+function dispatchResize() {
+    window.dispatchEvent(new Event('resize'))
+}
 
 </script>
 

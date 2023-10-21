@@ -17,6 +17,8 @@ export function calculateDistanceKM(from: Localization, to: Localization) {
     return d / 1000;
 }
 
+
+
 export function addressToLocalization(address: string): Localization {
     return {
         longitude: 0,
