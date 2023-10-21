@@ -8,18 +8,20 @@ function getLocalization(name: string): Localization {
     }
 }
 
-function getClinics(localization: Localization): Clinic[] {
+function getClinics(localization: Localization, maxDistanceKM: number = 1000): Clinic[] {
     return Array(5).map(() => randomClinic())
 }
 
-function getSORs(localization: Localization): SOR[] {
+function getSORs(localization: Localization, maxDistanceKM: number = 1000): SOR[] {
     return Array(5).map(() => randomPlace())
 }
 
-function getAEDs(localization: Localization): AED[] {
+function getAEDs(localization: Localization, maxDistanceKM: number = 1000): AED[] {
+    // read csv from aed_poland.csv
+
     return Array(5).map(() => randomPlace())
 }
 
-function getBloodPoints(localization: Localization): BloodPoint[] {
+function getBloodPoints(localization: Localization, maxDistanceKM: number = 1000): BloodPoint[] {
     return Array(5).map(() => randomBloodPoint())
 }
