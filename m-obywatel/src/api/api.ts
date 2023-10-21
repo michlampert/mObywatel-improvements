@@ -146,3 +146,13 @@ export function getCurrentLocation(): Promise<Localization> {
         }
     })
 }
+
+export function getPossibleTreatments(): Promise<string[]> {
+    return Promise.resolve(
+        [
+            "ODDZIAŁ CHIRURGII URAZOWO-ORTOPEDYCZNEJ",
+            "ODDZIAŁ CHIRURGII URAZOWO-ORTOPEDYCZNEJ DLA DZIECI",
+            "ODDZIAŁ CHIRURGICZNY OGÓLNY"
+        ]
+    )
+}
