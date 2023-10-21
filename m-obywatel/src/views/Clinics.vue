@@ -13,26 +13,33 @@
     <ion-content :fullscreen="true">
       <ion-list lines="none" class="padding-top">
         <ion-item>
-          <ion-segment value="time">
-            <ion-segment-button value="time">
+          <ion-segment :value="30">
+            <ion-segment-button :value="1000">
               <ion-icon :icon="timerOutline"></ion-icon>
               Szybko
             </ion-segment-button>
-            <ion-segment-button value="balance">
+            <ion-segment-button :value="30">
               <ion-icon :icon="optionsOutline"></ion-icon>
               Optymalnie
             </ion-segment-button>
-            <ion-segment-button value="distance">
+            <ion-segment-button :value="10">
               <ion-icon :icon="analytics"></ion-icon>
               Blisko
             </ion-segment-button>
           </ion-segment>
         </ion-item>
         <ion-item>
-          <ion-input label-placement="floating" placeholder="np. Ortopeda">
+          <ion-input label-placement="floating" placeholder="np. Ortopeda" v-model="treatment">
             <div slot="label">Usługa</div>
           </ion-input>
         </ion-item>
+        <!-- <ion-item>
+          <Dropdown :options="[{ id: 1, name: 'Option 1' }, { id: 2, name: 'Option 2' }]" v-on:selected="treatment"
+            v-on:filter="treatments" :disabled="false" name="zipcode" :maxItem="10"
+            placeholder="Please select an option">
+          </Dropdown>
+        </ion-item> -->
+
         <ion-item>
           <ion-input label-placement="floating" placeholder="np. Warszawa" v-model="address">
             <div slot="label">Miejscowość</div>
@@ -64,11 +71,15 @@
         </ion-item>
       </ion-list>
 
+      <div class="center">
+        <ion-spinner v-if="loading" name="circular" size="large" color="medium"></ion-spinner>
+      </div>
+
       <ion-list>
-        <ion-item  lines="none" v-for="clinic in clinics">
-          <Place :date="clinic.date" :city="clinic.address.city" :distance="clinic.distance" :name="clinic.name"
-            :telephone="clinic.phone" :address="clinic.address.details" :webpage="clinic.webpage"
-            :current-localization="currentLocation" :locations="clinic.localization">
+        <ion-item lines="none" v-for=" clinic  in  clinics ">
+          <Place :date="clinic.date" :city="clinic.address.city" :distance="clinic.distance"
+            :name="clinic.name" :telephone="clinic.phone" :address="clinic.address.details" :webpage="clinic.webpage"
+            :current-localization="currentLocation" :localization="clinic.localization">
           </Place>
         </ion-item>
       </ion-list>
@@ -79,19 +90,24 @@
 <script setup lang="ts">
 import Place from "@/components/Place.vue"
 import Toolbar from '@/components/Toolbar.vue'
-import { IonPage, IonHeader, IonContent } from '@ionic/vue';
+import { IonPage, IonHeader, IonContent, IonSpinner } from '@ionic/vue';
 import { analytics, list, locate, map, notifications, optionsOutline, pin, timerOutline } from 'ionicons/icons';
 
 import { IonRippleEffect } from '@ionic/vue';
-import { Ref, ref } from "vue";
+import { Ref, onMounted, ref } from "vue";
 import { Clinic } from "@/api/model"
-import { getClinics, getCurrentLocation } from "@/api/api"
+import { getClinics, getCurrentLocation, getPossibleTreatments } from "@/api/api"
 import { localizationToAddress } from "@/api/utils";
+import Dropdown from "@/components/Dropdown.vue";
 
-import { IonList, IonItem, IonSegment, IonSegmentButton, IonIcon, IonButton, IonText, IonInput } from "@ionic/vue";
+import { IonList, IonItem, IonSegment, IonSegmentButton, IonIcon, IonButton, IonText, IonInput, IonCard } from "@ionic/vue";
+// import Dropdown from 'vue-simple-search-dropdown';
 
 const clinics: Ref<Clinic[]> = ref([])
 const address: Ref<string> = ref("")
+const loading: Ref<boolean> = ref(false)
+const treatment: Ref<string> = ref("")
+const treatments: Ref<{ name: string, code: string }[]> = ref([])
 
 const currentLocation = {
   latitude: 54.21093325,
@@ -99,8 +115,11 @@ const currentLocation = {
 }
 
 function search() {
+  loading.value = true
+  clinics.value = []
   getClinics(currentLocation, "ODDZIAŁ CHIRURGICZNY OGÓLNY", 100)
     .then(value => {
+      loading.value = false
       clinics.value = value
     })
 }
@@ -114,10 +133,30 @@ function setCurrentAddress() {
     })
 }
 
+onMounted(() => {
+  getPossibleTreatments()
+    .then(val => treatments.value = val.map(val => ({ name: val, code: val })))
+})
+
 </script>
 
 <style>
 .full-width {
   width: 1000px !important;
 }
+
+ion-spinner {
+  width: 4em;
+  height: 4em;
+}
+
+.center {
+  margin: 12px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.suggestions {}
 </style>

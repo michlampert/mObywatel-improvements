@@ -24,9 +24,11 @@
     "@ionic/vue-router": "^7.0.0",
     "ionicons": "^7.0.0",
     "papaparse": "^5.4.1",
+    "primevue": "^3.37.0",
     "sass": "^1.69.4",
     "vue": "^3.2.45",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "vue-simple-search-dropdown": "^1.0.1"
   },
   "devDependencies": {
     "@capacitor/cli": "5.5.0",
