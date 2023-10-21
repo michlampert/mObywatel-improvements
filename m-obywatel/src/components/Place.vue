@@ -1,29 +1,31 @@
 <template>
     <ion-card>
         <ion-card-header>
-            <ion-card-title>{{ name }}</ion-card-title>
-            <ion-card-subtitle>
+            <ion-card-title class="capitalize">{{ name?.toLowerCase() }}</ion-card-title>
+            <ion-card-subtitle class="capitalize">
                 <ion-icon :icon="map"></ion-icon>
-                {{ city }}, {{ distance }}km
+                {{ city?.toLowerCase() }}, {{ distance }}km
             </ion-card-subtitle>
-            <ion-card-subtitle>
+            <ion-card-subtitle v-if="date">
                 <ion-icon :icon="calendarNumber"></ion-icon>
                 {{ date }}
             </ion-card-subtitle>
 
         </ion-card-header>
         <ion-card-content>
-            <ion-label>
+            <ion-label v-if="telephone">
                 <ion-icon :icon="call"></ion-icon>
-                <a>{{" "}}{{ telephone }} </a>
+                <a href="tel:{{ telephone }}">{{ " " }}{{ telephone }} </a>
             </ion-label>
-            <ion-label>
+            <ion-label class="capitalize">
                 <ion-icon :icon="location"></ion-icon>
-                <a>{{" "}}{{ city }}, {{ address }}</a>
+                <a v-if="!localization">{{ ` ${city}, ${address}`.toLowerCase() }}</a>
+                <a v-if="localization" href="geo:{{localization?.longitude}},{{localization?.longitude}}" target="_blank">{{ ` ${city},
+                                    ${address}`.toLowerCase() }}</a>
             </ion-label>
-            <ion-label>
+            <ion-label v-if="webpage">
                 <ion-icon :icon="globe"></ion-icon>
-                <a target="_blank" :href="webpage">{{" "}}{{ webpage }}</a>
+                <a target="_blank" :href="webpage">{{ " " }}{{ webpage }}</a>
             </ion-label>
         </ion-card-content>
         <ion-accordion-group>
@@ -41,8 +43,11 @@
 
 <script setup lang="ts">
 import { calendarNumber, call, globe, location, map } from 'ionicons/icons';
-import { ref } from 'vue';
+import { PropType, capitalize, ref } from 'vue';
 import Map from "./Map.vue";
+import { Localization } from "@/api/model"
+
+import { IonCard, IonCardContent, IonCardTitle, IonAccordion, IonLabel, IonIcon, IonAccordionGroup, IonCardSubtitle, IonCardHeader, IonItem } from '@ionic/vue';
 
 const props = defineProps({
     date: Date,
@@ -51,7 +56,8 @@ const props = defineProps({
     name: String,
     telephone: String,
     address: String,
-    webpage: String
+    webpage: String,
+    localization: Object as PropType<Localization>,
 })
 
 </script>
@@ -71,7 +77,11 @@ ion-content {
         font-size: 0.75rem !important;
     }
 
-    ion-card-subtitle {
+    ion-card-title {
+        font-size: 1.5rem;
+    }
+
+    .capitalize {
         text-transform: capitalize;
     }
 }

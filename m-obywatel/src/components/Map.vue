@@ -4,6 +4,7 @@
 </template>
 
 <script setup lang="ts">
+import { IonImg } from '@ionic/vue';
 
 </script>
 

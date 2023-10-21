@@ -2,7 +2,12 @@
   <ion-page>
     <ion-header>
       <Toolbar>
-        Najbliższe terminy
+        <template v-slot:name>
+          Najbliższe terminy
+        </template>
+        <template v-slot:alert>
+          <ion-icon :icon="notifications" size="large" style="margin-bottom: 0px"></ion-icon>
+        </template>
       </Toolbar>
     </ion-header>
     <ion-content :fullscreen="true">
@@ -24,15 +29,15 @@
           </ion-segment>
         </ion-item>
         <ion-item>
-          <ion-input label-placement="floating" :clear-input="true" placeholder="np. Ortopeda">
+          <ion-input label-placement="floating" placeholder="np. Ortopeda">
             <div slot="label">Usługa</div>
           </ion-input>
         </ion-item>
         <ion-item>
-          <ion-input label-placement="floating" :clear-input="true" placeholder="np. Warszawa">
+          <ion-input label-placement="floating" placeholder="np. Warszawa" v-model="address">
             <div slot="label">Miejscowość</div>
           </ion-input>
-          <ion-button class="ion-activatable" shape="round" size="small" fill="clear">
+          <ion-button class="ion-activatable" shape="round" size="small" fill="clear" @click="setCurrentAddress()">
             <ion-ripple-effect></ion-ripple-effect>
             <ion-icon :icon="locate" size="large" color="primary"></ion-icon>
           </ion-button>
@@ -40,9 +45,9 @@
         <ion-item>
           <ion-button class="ion-activatable full-width" shape="round" size="small" expand="full" @click="search()">
             <ion-ripple-effect></ion-ripple-effect>
-              <ion-text>
-                <p>wyszukaj</p>
-              </ion-text>
+            <ion-text>
+              <p>wyszukaj</p>
+            </ion-text>
           </ion-button>
         </ion-item>
         <ion-item>
@@ -61,15 +66,11 @@
 
       <ion-list>
         <ion-item lines="none" v-for="clinic in clinics">
-          <Place :date="new Date(2023, 0, 1)" :city="'Warszawa'" :distance="123"
-            :name="'Szpital im. JP2'" :telephone="'123456789'" :address="'ul. Wiejska 13'" :webpage="'google.com'">
+          <Place :date="clinic.date" :city="clinic.address.city" :distance="123" :name="clinic.name"
+            :telephone="clinic.phone" :address="clinic.address.details" :webpage="clinic.webpage"
+            :localization="{ latitude: 52.0, longitude: 24.0 }">
           </Place>
         </ion-item>
-        <!-- <ion-item lines="none">
-          <Place>
-
-          </Place>
-        </ion-item> -->
       </ion-list>
     </ion-content>
   </ion-page>
@@ -78,18 +79,34 @@
 <script setup lang="ts">
 import Place from "@/components/Place.vue"
 import Toolbar from '@/components/Toolbar.vue'
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue';
-import { analytics, call, heart, list, locate, map, optionsOutline, pin, timerOutline } from 'ionicons/icons';
+import { IonPage, IonHeader, IonContent } from '@ionic/vue';
+import { analytics, list, locate, map, notifications, optionsOutline, pin, timerOutline } from 'ionicons/icons';
 
 import { IonRippleEffect } from '@ionic/vue';
-import { Ref, onMounted, ref } from "vue";
+import { Ref, ref } from "vue";
 import { Clinic } from "@/api/model"
-import { getClinics } from "@/api/api"
+import { getClinics, getCurrentLocation } from "@/api/api"
+import { localizationToAddress } from "@/api/utils";
+
+import { IonList, IonItem, IonSegment, IonSegmentButton, IonIcon, IonButton, IonText, IonInput } from "@ionic/vue";
 
 const clinics: Ref<Clinic[]> = ref([])
+const address: Ref<string> = ref("")
 
 function search() {
-  clinics.value = getClinics({longitude:0, latitude:0})
+  getClinics({ longitude: 52, latitude: 22 }, "ODDZIAŁ CHIRURGICZNY OGÓLNY", 10000000)
+    .then(value => {
+      clinics.value = value
+    })
+}
+
+function setCurrentAddress() {
+  console.log(address.value)
+  getCurrentLocation()
+    .then(value => {
+      console.log(value)
+      address.value = localizationToAddress(value)
+    })
 }
 
 </script>

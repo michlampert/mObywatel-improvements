@@ -1,6 +1,6 @@
 import { AED, BloodPoint, Clinic, Localization, SOR } from "./model"
 import { randomBloodPoint, randomClinic, randomPlace } from "./randomData"
-
+import { Geolocation } from '@capacitor/geolocation';
 import { calculateDistanceKM } from "./utils";
 
 import * as Papa from 'papaparse';
@@ -39,7 +39,7 @@ interface SORCSV {
 
 
 export async function getClinics(
-        localization: Localization, benefit: string, maxDistanceKM: number = 1000, cito: boolean = false
+    localization: Localization, benefit: string, maxDistanceKM: number = 1000, cito: boolean = false
 ): Promise<Clinic[]> {
     const CLINICS_API_BASE = 'https://api.nfz.gov.pl/app-itl-api/queues?page=1&limit=25&format=json&api-version=1.3'
 
@@ -123,7 +123,8 @@ export async function getAEDs(localization: Localization, maxDistanceKM: number 
             },
             webpage: '',
             phone: aed.phone
-        }});
+        }
+    });
 
     return AEDData.filter((aed: AED) => {
         return calculateDistanceKM(localization, aed.localization) < maxDistanceKM;
@@ -132,4 +133,13 @@ export async function getAEDs(localization: Localization, maxDistanceKM: number 
 
 export function getBloodPoints(localization: Localization, maxDistanceKM: number = 1000): BloodPoint[] {
     return Array(5).map(() => randomBloodPoint())
+}
+
+export function getCurrentLocation(): Promise<Localization> {
+    return Geolocation.getCurrentPosition().then(value => {
+        return {
+            longitude: value.coords.longitude,
+            latitude: value.coords.latitude
+        }
+    })
 }
