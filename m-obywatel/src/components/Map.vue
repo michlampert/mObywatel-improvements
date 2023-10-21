@@ -1,6 +1,6 @@
 <template>
   <div ref="mapDiv" style="height:80vw; width:90vw">
-    <l-map ref="map" :zoom="zoom" :center="[currentLocation.latitude, currentLocation.longitude]" :use-global-leaflet="false">
+    <l-map :zoom.sync="zoom" :use-global-leaflet="false" :center="middle">
       <l-tile-layer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         layer-type="base"
@@ -9,7 +9,7 @@
       ></l-tile-layer>
         <l-circle-marker :lat-lng="[currentLocation.latitude, currentLocation.longitude]" :color="currentLocationColor"></l-circle-marker>
 
-        <l-marker :lat-lng="[locations.latitude, locations.longitude]">
+        <l-marker v-for="location in otherLocations" :lat-lng="[location.latitude, location.longitude]">
             <l-popup>
                 <p>{{ location.name }}</p>
             </l-popup>
@@ -26,13 +26,27 @@ import { PropType } from "vue";
 
 import { Localization } from "@/api/model"
 
-let currentLocationColor = "red";
+import { calculateDistanceKM } from "@/api/utils";
+
+function linearFunction(x: number) {
+  const x1 = 71; // x-coordinate of the first point
+  const y1 = 8;  // y-coordinate of the first point
+  const x2 = 162; // x-coordinate of the second point
+  const y2 = 7;  // y-coordinate of the second point
+
+  // Calculate the slope (m) using the formula: m = (y2 - y1) / (x2 - x1)
+  const slope = (y2 - y1) / (x2 - x1);
+
+  // Calculate the y-intercept (b) using the formula: b = y - mx
+  const intercept = y1 - slope * x1;
+
+  // Calculate the y value using the linear function equation: y = mx + b
+  const y = slope * x + intercept;
+
+  return y;
+}
 
 const props = defineProps({
-    zoom: {
-        type: Number,
-        default: '1',
-    },
     currentLocation: {
         type: Object as PropType<Localization>,
         default: () => ({
@@ -40,8 +54,8 @@ const props = defineProps({
             longitude: 0,
         }),
     },
-    locations: {
-        type: Object,
+    otherLocations: {
+        type: Array as PropType<Localization[]>,
         default: () => (
             {
                 latitude: 0,
@@ -51,6 +65,23 @@ const props = defineProps({
         ),
     },
 });
+
+const minimalLatitude = Math.min(props.currentLocation.latitude, ...props.otherLocations.map(location => location.latitude));
+const minimalLongitude = Math.min(props.currentLocation.longitude, ...props.otherLocations.map(location => location.longitude));
+const maximalLatitude = Math.max(props.currentLocation.latitude, ...props.otherLocations.map(location => location.latitude));
+const maximalLongitude = Math.max(props.currentLocation.longitude, ...props.otherLocations.map(location => location.longitude));
+
+let currentLocationColor = "red";
+
+const zoom = linearFunction(calculateDistanceKM(
+    {latitude: maximalLatitude, longitude: maximalLongitude},
+    {latitude: minimalLatitude, longitude: minimalLongitude}
+));
+const middle = [
+    (maximalLatitude + minimalLatitude) / 2,
+    (maximalLongitude + minimalLongitude) / 2
+]
+
 </script>
 
 <style>

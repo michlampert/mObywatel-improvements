@@ -34,7 +34,7 @@
                     <ion-label>pokaż na mapie</ion-label>
                 </ion-item>
                 <div slot="content">
-                    <Map :zoom="10" :currentLocation="currentLocalization" :locations="locations"/>
+                    <Map :currentLocation="currentLocalization" :otherLocations="locations"/>
                 </div>
             </ion-accordion>
         </ion-accordion-group>
@@ -58,7 +58,7 @@ const props = defineProps({
     address: String,
     webpage: String,
     currentLocalization: Object as PropType<Localization>,
-    locations: Object as PropType<Localization>,
+    locations: Array as PropType<Localization[]>,
 })
 
 function dispatchResize() {
