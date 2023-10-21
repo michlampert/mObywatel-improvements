@@ -56,6 +56,7 @@ export async function getClinics(
                 longitude: clinic.longitude,
                 latitude: clinic.latitude
             },
+            distance: calculateDistanceKM(localization, {longitude: clinic.longitude, latitude: clinic.latitude}),
             address: {
                 city: clinic.locality,
                 details: clinic.address
@@ -86,6 +87,7 @@ export async function getSORs(localization: Localization, maxDistanceKM: number 
         return {
             name: sor.name,
             localization: { latitude: parseFloat(sor.lat), longitude: parseFloat(sor.lon) },
+            distance: calculateDistanceKM(localization, { latitude: parseFloat(sor.lat), longitude: parseFloat(sor.lon) }),
             address: {
                 city: sor.city,
                 details: sor.street + " " + sor.buildingNumber
@@ -117,6 +119,7 @@ export async function getAEDs(localization: Localization, maxDistanceKM: number 
                 longitude: parseFloat(aed.longitude),
                 latitude: parseFloat(aed.latitude)
             },
+            distance: calculateDistanceKM(localization, { longitude: parseFloat(aed.longitude), latitude: parseFloat(aed.latitude) }),
             address: {
                 city: aed.location,
                 details: aed.defibrillatorLocation
