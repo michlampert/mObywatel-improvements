@@ -74,10 +74,10 @@
       </div>
 
       <ion-list>
-        <ion-item lines="none" v-for=" clinic  in  clinics ">
+        <ion-item  lines="none" v-for="clinic in clinics">
           <Place :date="clinic.date" :city="clinic.address.city" :distance="clinic.distance" :name="clinic.name"
             :telephone="clinic.phone" :address="clinic.address.details" :webpage="clinic.webpage"
-            :current-localization="currentLocation" :localization="clinic.localization">
+            :current-localization="currentLocation" :locations="[clinic.localization]">
           </Place>
         </ion-item>
       </ion-list>
