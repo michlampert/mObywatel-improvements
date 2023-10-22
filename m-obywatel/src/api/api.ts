@@ -37,6 +37,25 @@ interface SORCSV {
     lat: string;
 }
 
+const cacheData = {
+    sorResults: (async () => {
+        let sorResponse = await fetch("src/assets/sor_geocoded.csv");
+        let sorData = await sorResponse.text();
+
+        return Papa.parse(sorData, {
+            header: true,
+        });
+    })(),
+    aedResults: (async () => {
+        let aedResponse = await fetch("src/assets/aed_poland.csv");
+        let aedData = await aedResponse.text();
+
+        return Papa.parse(aedData, {
+            header: true,
+        });
+    })()
+}
+
 
 export async function getClinics(
     localization: Localization, benefit: string, maxDistanceKM: number = 1000, cito: boolean = false
@@ -75,16 +94,16 @@ export async function getClinics(
     });
 }
 
-let sorResponse = await fetch("src/assets/sor_geocoded.csv");
-let sorData = await sorResponse.text();
+// let sorResponse = await fetch("src/assets/sor_geocoded.csv");
+// let sorData = await sorResponse.text();
 
-const sorResults = Papa.parse(sorData, {
-    header: true,
-});
+// const sorResults = Papa.parse(sorData, {
+//     header: true,
+// });
 
 
 export async function getSORs(localization: Localization, maxDistanceKM: number = 1000): Promise<SOR[]> {
-    let csvData = sorResults.data as SORCSV[];
+    let csvData = (await cacheData.sorResults).data as SORCSV[];
 
     let SORData = csvData.map((sor: SORCSV) => {
         return {
@@ -108,16 +127,16 @@ export async function getSORs(localization: Localization, maxDistanceKM: number 
 }
 
 
-let aedResponse = await fetch("src/assets/aed_poland.csv");
-let aedData = await aedResponse.text();
+// let aedResponse = await fetch("src/assets/aed_poland.csv");
+// let aedData = await aedResponse.text();
 
-const aedResults = Papa.parse(aedData, {
-    header: true,
-});
+// const aedResults = Papa.parse(aedData, {
+//     header: true,
+// });
 
 
 export async function getAEDs(localization: Localization, maxDistanceKM: number = 1000): Promise<AED[]> {
-    let csvData = aedResults.data as AEDCSV[];
+    let csvData = (await cacheData.aedResults).data as AEDCSV[];
 
     let AEDData = csvData.map((aed: AEDCSV) => {
         return {
