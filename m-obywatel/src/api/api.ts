@@ -1,7 +1,7 @@
 import { AED, BloodPoint, Clinic, Localization, SOR } from "./model"
 import { randomBloodPoint, randomClinic, randomPlace } from "./randomData"
 import { Geolocation } from '@capacitor/geolocation';
-import { calculateDistanceKM } from "./utils";
+import { calculateDistanceKM, cityToLocalization } from "./utils";
 
 import * as Papa from 'papaparse';
 
@@ -136,8 +136,46 @@ export async function getAEDs(localization: Localization, maxDistanceKM: number 
     });
 }
 
-export function getBloodPoints(localization: Localization, maxDistanceKM: number = 1000): BloodPoint[] {
-    return Array(5).map(() => randomBloodPoint())
+export async function getBloodPoints(): Promise<BloodPoint[]> {
+    console.log("getBloodPoints")
+    let response = await fetch("src/assets/blood.json");
+    let originalData = await response.json();
+    let transformedData = {};
+    for (const bloodType in originalData) {
+        const cities = originalData[bloodType];
+        // Iterate through cities for each blood type
+        for (const city in cities) {
+          const count = cities[city];
+          // Check if the city is already in the transformedData dictionary
+          if (transformedData.hasOwnProperty(city)) {
+            // If it is, add the current blood type to the existing city entry
+            transformedData[city][bloodType] = count;
+          } else {
+            // If it's not, create a new city entry with the current blood type
+            transformedData[city] = { [bloodType]: count };
+          }
+        }
+      }
+    const bloodPoints = await Promise.all(Object.entries(transformedData).map(async ([city, bloodTypes]) => {
+        return {
+            name: city,
+            localization: await cityToLocalization(city),
+            distance: -1,
+            address: {
+                city: city,
+                details: ""
+            },
+            webpage: "",
+            phone: "",
+            state: bloodTypes as Object,
+        };
+    }));
+
+    return bloodPoints.map((bp: BloodPoint) => {
+        return {
+            ...bp
+        }
+    });
 }
 
 export function getCurrentLocation(): Promise<Localization> {
