@@ -11,10 +11,6 @@
       </Toolbar>
     </ion-header>
     <ion-content :fullscreen="true">
-      {{ currentLocation }}
-      {{ address }}
-      {{ viewMode }}
-      {{ searchMode }}
       <ion-list lines="none" class="padding-top">
         <ion-item>
           <ion-segment :value="30" v-model="searchMode">
@@ -53,15 +49,25 @@
       <div class="center">
         <ion-spinner v-if="loading" name="circular" size="large" color="medium"></ion-spinner>
       </div>
+      <!-- {{ viewMode }} -->
+      <Transition name="list">
+        <template v-if="viewMode == 'list'">
+          <ion-list>
+            <!-- {{ clinics }} -->
+            <ion-item lines="none" v-for="clinic in clinics">
+              <Place :currentLocation="currentLocation" :place="clinic" :places="[clinic]">
+              </Place>
+            </ion-item>
+          </ion-list>
+        </template>
+      </Transition>
+      <Transition name="map">
+        <template v-if="viewMode == 'map'">
+            <Map :current-location="currentLocation" v-bind:other-places="clinics.map(val => val as PlacesCombined)">
+            </Map>
+        </template>
+      </Transition>
 
-      <ion-list>
-        <ion-item lines="none" v-for="clinic in clinics">
-          <Place :date="clinic.date" :city="clinic.address.city" :distance="clinic.distance" :name="clinic.name"
-            :telephone="clinic.phone" :address="clinic.address.details" :webpage="clinic.webpage"
-            :current-localization="currentLocation" :locations="[clinic.localization]">
-          </Place>
-        </ion-item>
-      </ion-list>
     </ion-content>
   </ion-page>
 </template>
@@ -72,7 +78,7 @@ import Toolbar from '@/components/Toolbar.vue'
 import { IonPage, IonHeader, IonContent, IonSpinner } from '@ionic/vue';
 import { analytics, optionsOutline, timerOutline } from 'ionicons/icons';
 import { Ref, onMounted, ref } from "vue";
-import { Clinic } from "@/api/model"
+import { Clinic, PlacesCombined } from "@/api/model"
 import { getClinics, getCurrentLocation, getPossibleTreatments } from "@/api/api"
 import Alert from "@/components/Alert.vue"
 import City from "@/components/City.vue"
@@ -80,6 +86,7 @@ import SearchButton from "@/components/SearchButton.vue";
 
 import { IonList, IonItem, IonSegment, IonSegmentButton, IonIcon, IonButton, IonText, IonInput, IonCard } from "@ionic/vue";
 import ViewModeButton from "@/components/ViewModeButton.vue";
+import Map from "@/components/Map.vue";
 
 const clinics: Ref<Clinic[]> = ref([])
 const address: Ref<string> = ref("")
@@ -131,4 +138,25 @@ ion-spinner {
 }
 
 .suggestions {}
+
+.list-enter-active,
+.list-leave-active {
+  transition: transform 0.5s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+  transform: translateX(-100%);
+}
+
+
+.map-enter-active,
+.map-leave-active {
+  transition: transform 0.5s ease;
+}
+
+.map-enter-from,
+.map-leave-to {
+  transform: translateX(100%);
+}
 </style>

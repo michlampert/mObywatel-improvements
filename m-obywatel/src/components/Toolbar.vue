@@ -29,4 +29,8 @@ div[slot="end"] {
     display: flex;
     margin: 8px
 }
+
+ion-title {
+    padding: 0px
+}
 </style>
