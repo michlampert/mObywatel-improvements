@@ -32,8 +32,8 @@ export interface AED extends Place {
 }
 
 export interface BloodPoint extends Place {
-    state: number,
-    subordinates: Place[],
+    state: Object,
+    subordinates?: Place[],
 }
 
 // XD

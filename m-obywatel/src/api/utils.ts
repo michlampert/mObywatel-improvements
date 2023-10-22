@@ -35,7 +35,7 @@ export async function cityToLocalization(city: string): Promise<Localization> {
 
     const cities: CoordsCSV[] = results.data as CoordsCSV[];
 
-    let foundedCity = cities.find((row: any) => row.city.trim() === city)
+    let foundedCity = cities.find((row: any) => row.city.trim().toLowerCase() === city.toLowerCase())
 
     if (foundedCity === undefined) {
         return {
