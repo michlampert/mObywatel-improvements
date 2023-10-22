@@ -140,7 +140,7 @@ export async function getAEDs(localization: Localization, maxDistanceKM: number 
         return calculateDistanceKM(localization, aed.localization) < maxDistanceKM;
     }).sort((a: AED, b: AED) => {
         return a.distance - b.distance;
-    });
+    }).slice(0, 20);
 }
 
 export async function getBloodPoints(localization: Localization, bloodType: string, maxDistanceKM: number = 1000): Promise<BloodPoint[]> {
