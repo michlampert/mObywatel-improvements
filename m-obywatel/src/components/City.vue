@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 import { getCurrentLocation } from '@/api/api';
-import { localizationToAddress } from '@/api/utils';
+import { localizationToCity } from '@/api/utils';
 import { IonInput, IonButton, IonIcon, IonRippleEffect } from '@ionic/vue';
 import { locate } from 'ionicons/icons';
 import { Ref, ref } from 'vue';
@@ -25,7 +25,9 @@ function setCurrentAddress() {
     getCurrentLocation()
         .then(value => {
             console.log(value)
-            address.value = localizationToAddress(value)
+            return localizationToCity(value)
+        }).then(value => {
+            address.value = value;
             emit('update:address', address.value)
         })
 }
