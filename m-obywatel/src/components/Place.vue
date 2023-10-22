@@ -1,7 +1,7 @@
 <template>
     <ion-card class="card-content">
         <!-- XD -->
-        <template v-if="place?.name">
+        <template v-if="place?.name && !place?.state">
             <ion-card-header>
                 <ion-card-title class="capitalize">{{ place?.name?.toLowerCase() }}</ion-card-title>
                 <ion-card-subtitle class="capitalize">
@@ -42,7 +42,7 @@
                 </ion-accordion>
             </ion-accordion-group>
         </template>
-        <template v-if="!place?.name">
+        <template v-if="!place?.name && !place?.state">
             <ion-card-header>
                 <ion-card-title class="capitalize">{{ city }}, {{ Math.round(place?.distance ?? 0) }}km</ion-card-title>
                 <ion-card-subtitle v-if="place?.date">
@@ -52,11 +52,27 @@
 
             </ion-card-header>
             <ion-card-content v-if="place?.phone">
-                <ion-label >
+                <ion-label>
                     <ion-icon :icon="call"></ion-icon>
                     <a href="tel:{{ place?.phone }}">{{ " " }}{{ place?.phone }} </a>
                 </ion-label>
             </ion-card-content>
+            <ion-accordion-group @ionChange="dispatchResize" v-if="showMap">
+                <ion-accordion value="first">
+                    <ion-item slot="header" color="light">
+                        <ion-label>pokaż na mapie</ion-label>
+                    </ion-item>
+                    <div slot="content">
+                        <Map :currentLocation="currentLocation" v-bind:other-places="places"></Map>
+                    </div>
+                </ion-accordion>
+            </ion-accordion-group>
+        </template>
+        <template v-if="place?.state">
+            <ion-card-header>
+                <ion-card-title class="capitalize">{{ place?.name?.toLowerCase() }}, {{ Math.round(place?.distance ?? 0)
+                }}km <ion-icon :src="`../../resources/water_${place?.state}.svg`" size="large"></ion-icon></ion-card-title>
+            </ion-card-header>
             <ion-accordion-group @ionChange="dispatchResize" v-if="showMap">
                 <ion-accordion value="first">
                     <ion-item slot="header" color="light">

@@ -44,11 +44,13 @@
 
       </ion-list>
 
-      <div class="center">
-        <ion-spinner v-if="loading" name="circular" size="large" color="medium"></ion-spinner>
-      </div>
-
-      <PlacesPresentation v-model:current-location="currentLocation" v-model:places="clinics"></PlacesPresentation>
+      <PlacesPresentation v-model:current-location="currentLocation" v-model:places="clinics">
+        <template v-slot:spinner>
+          <div class="center">
+            <ion-spinner v-if="loading" name="circular" size="large" color="medium"></ion-spinner>
+          </div>
+        </template>
+      </PlacesPresentation>
 
     </ion-content>
   </ion-page>
@@ -80,7 +82,6 @@ const searchMode: Ref<number> = ref(30)
 
 const currentLocation: Ref<Localization | undefined> = ref(undefined)
 
-
 async function search() {
   loading.value = true
   clinics.value = []
@@ -103,9 +104,7 @@ onMounted(() => {
 </script>
 
 <style>
-.full-width {
-  width: 1000px !important;
-}
+
 
 ion-spinner {
   width: 4em;

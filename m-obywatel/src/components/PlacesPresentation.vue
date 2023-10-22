@@ -5,6 +5,7 @@
                 <ViewModeButton v-model="viewMode"></ViewModeButton>
             </ion-item>
         </ion-list>
+        <slot name="spinner"></slot>
         <Transition name="list">
             <template v-if="viewMode == 'list'">
                 <div class="scrollable">

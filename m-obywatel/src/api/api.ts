@@ -193,10 +193,11 @@ export async function getBloodPoints(localization: Localization, bloodType: stri
         }
     }
     const bloodPoints = await Promise.all(Object.entries(transformedData).map(async ([city, bloodTypes]) => {
+        let cityCoors = await cityToLocalization(city);
         return {
             name: city,
-            localization: await cityToLocalization(city),
-            distance: -1,
+            localization: cityCoors,
+            distance: calculateDistanceKM(cityCoors, localization),
             address: {
                 city: city,
                 details: ""
@@ -211,7 +212,7 @@ export async function getBloodPoints(localization: Localization, bloodType: stri
         return calculateDistanceKM(localization, bloodPoint.localization) < maxDistanceKM;
     }).sort((a: BloodPoint, b: BloodPoint) => {
         return a.distance - b.distance;
-    });
+    }).filter(v => v.state);
 }
 
 export function getCurrentLocation(): Promise<Localization> {

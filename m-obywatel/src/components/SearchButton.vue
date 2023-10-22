@@ -9,6 +9,7 @@
 </template>
 <script setup lang="ts">
 import { PropType } from 'vue';
+import { IonButton, IonRippleEffect, IonText } from '@ionic/vue';
 
 
 const props = defineProps({
@@ -26,4 +27,8 @@ function enabled(): boolean {
 
 </script>
 
-<style scoped></style>
+<style scoped>
+.full-width {
+  width: 1000px !important;
+}
+</style>
