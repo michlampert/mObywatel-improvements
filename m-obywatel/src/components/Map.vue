@@ -38,10 +38,10 @@ function openModal(place: PlacesCombined) {
 }
 
 function linearFunction(x: number) {
-    const x1 = 71; // x-coordinate of the first point
-    const y1 = 8;  // y-coordinate of the first point
-    const x2 = 162; // x-coordinate of the second point
-    const y2 = 7;  // y-coordinate of the second point
+    const x1 = 2; // x-coordinate of the first point 2
+    const y1 = 9;  // y-coordinate of the first point 9
+    const x2 = 6; // x-coordinate of the second point
+    const y2 = 8;  // y-coordinate of the second point
 
     // Calculate the slope (m) using the formula: m = (y2 - y1) / (x2 - x1)
     const slope = (y2 - y1) / (x2 - x1);
@@ -72,8 +72,7 @@ const maximalLatitude = Math.max(props.currentLocation.latitude, ...props.otherP
 const maximalLongitude = Math.max(props.currentLocation.longitude, ...props.otherPlaces?.map(val => val.localization).map(location => location.longitude) ?? []);
 
 let currentLocationColor = "red";
-
-const zoom = linearFunction(Math.max(
+let zoom = linearFunction(Math.max(
     Math.abs(maximalLatitude - minimalLatitude),
     Math.abs(maximalLongitude - minimalLongitude))
 );
@@ -81,7 +80,6 @@ const middle = [
     (maximalLatitude + minimalLatitude) / 2,
     (maximalLongitude + minimalLongitude) / 2
 ]
-
 </script>
 
 <style>
