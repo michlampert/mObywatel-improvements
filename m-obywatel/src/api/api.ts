@@ -147,12 +147,13 @@ export function getCurrentLocation(): Promise<Localization> {
     })
 }
 
-export function getPossibleTreatments(): Promise<string[]> {
-    return Promise.resolve(
-        [
-            "ODDZIAŁ CHIRURGII URAZOWO-ORTOPEDYCZNEJ",
-            "ODDZIAŁ CHIRURGII URAZOWO-ORTOPEDYCZNEJ DLA DZIECI",
-            "ODDZIAŁ CHIRURGICZNY OGÓLNY"
-        ]
-    )
+export async function getPossibleTreatments(): Promise<string[]> {
+    let response = await fetch("src/assets/benefits.csv");
+    let data = await response.text();
+
+    const results = Papa.parse(data, {});
+
+    const tmp = results.data as string[];
+
+    return tmp.map(innerArray => innerArray[0]);
 }

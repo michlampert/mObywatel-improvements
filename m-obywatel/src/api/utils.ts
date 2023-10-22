@@ -1,5 +1,7 @@
 import { Localization } from "./model";
 
+import * as Papa from 'papaparse';
+
 
 export function calculateDistanceKM(from: Localization, to: Localization) {
     const R = 6371e3; // metres
@@ -17,15 +19,55 @@ export function calculateDistanceKM(from: Localization, to: Localization) {
     return d / 1000;
 }
 
+interface CoordsCSV {
+    city: string,
+    longitude: string,
+    latitude: string
+}
 
+export async function cityToLocalization(city: string): Promise<Localization> {
+    let response = await fetch("src/assets/pl_coords.csv");
+    let data = await response.text();
 
-export function addressToLocalization(address: string): Localization {
+    const results = Papa.parse(data, {
+        header: true,
+    });
+
+    const cities: CoordsCSV[] = results.data as CoordsCSV[];
+
+    let foundedCity = cities.find((row: any) => row.city.trim() === city)
+
+    if (foundedCity === undefined) {
+        return {
+            longitude: 0,
+            latitude: 0
+        }
+    }
     return {
-        longitude: 0,
-        latitude: 0
+        longitude: parseFloat(foundedCity.longitude),
+        latitude: parseFloat(foundedCity.latitude)
     }
 }
 
-export function localizationToAddress(localization: Localization): string {
-    return "Warszawa"
+export async function localizationToCity(localization: Localization): Promise<string> {
+    let response = await fetch("src/assets/pl_coords.csv");
+    let data = await response.text();
+
+    const results = Papa.parse(data, {
+        header: true,
+    });
+
+    const cities: CoordsCSV[] = results.data as CoordsCSV[];
+    let closestCity = null;
+    let minDistance = Number.MAX_VALUE;
+
+    for (const city of cities) {
+        const distance = calculateDistanceKM(localization, {latitude: parseFloat(city.latitude), longitude: parseFloat(city.longitude)});
+        if (distance < minDistance) {
+            minDistance = distance;
+            closestCity = city.city;
+        }
+    }
+
+    return closestCity as string;
 }
