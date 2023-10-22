@@ -24,8 +24,7 @@
                     <a v-if="!place?.localization">{{ ` ${place?.address.city}, ${place?.address.details}`.toLowerCase()
                     }}</a>
                     <a v-if="place?.localization" href="geo:{{localization?.longitude}},{{localization?.longitude}}"
-                        target="_blank">{{ ` ${place?.address.city},
-                                                ${place?.address.details}`.toLowerCase() }}</a>
+                        target="_blank">{{ ` ${place?.address.city}, ${place?.address.details}`.toLowerCase() }}</a>
                 </ion-label>
                 <ion-label v-if="place?.webpage">
                     <ion-icon :icon="globe"></ion-icon>

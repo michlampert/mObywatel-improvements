@@ -10,7 +10,7 @@
     <ion-content :fullscreen="true">
       <ion-list lines="none" class="padding-top">
         <ion-item>
-          <City v-model:address="address"></City>
+          <City v-model:address="address" :on-change:address="updateLocalization()"></City>
         </ion-item>
         <ion-item>
           <SearchButton @click="search()" :required-fields="[address]"></SearchButton>
@@ -32,33 +32,38 @@
 import Toolbar from '@/components/Toolbar.vue'
 import { IonPage, IonHeader, IonContent, IonSpinner } from '@ionic/vue';
 import { Ref, ref } from "vue";
-import { Place } from "@/api/model"
-import {  getSORs } from "@/api/api"
+import { Localization, Place } from "@/api/model"
+import { getSORs } from "@/api/api"
 import City from "@/components/City.vue"
 import SearchButton from "@/components/SearchButton.vue";
 
 import { IonList, IonItem, IonSegment, IonSegmentButton, IonIcon, IonInput } from "@ionic/vue";
 import PlacesPresentation from "@/components/PlacesPresentation.vue";
+import { cityToLocalization } from '@/api/utils';
 
 const places: Ref<Place[]> = ref([])
 const address: Ref<string> = ref("")
 const loading: Ref<boolean> = ref(false)
 const searchMode: Ref<number> = ref(30)
 
-const currentLocation = {
-  latitude: 54.21093325,
-  longitude: 22.000529771276238,
+
+const currentLocation: Ref<Localization | undefined> = ref(undefined)
+
+function updateLocalization() {
+  cityToLocalization(address.value)
+    .then(val => {
+      currentLocation.value = val
+    })
 }
 
 function search() {
   loading.value = true
   places.value = []
-  getSORs(currentLocation, searchMode.value)
+  getSORs(currentLocation.value!, searchMode.value)
     .then(value => {
       loading.value = false
       places.value = value
     })
 }
-
 
 </script>
