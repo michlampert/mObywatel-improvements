@@ -21,10 +21,8 @@ const address: Ref<string> = ref("")
 const emit = defineEmits(['update:address'])
 
 function setCurrentAddress() {
-    console.log(address.value)
     getCurrentLocation()
         .then(value => {
-            console.log(value)
             return localizationToCity(value)
         }).then(value => {
             address.value = value;

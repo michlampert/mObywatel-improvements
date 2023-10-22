@@ -36,7 +36,7 @@
 
 
         <ion-item>
-          <City v-model:address="address" :on-change:address="updateLocalization()"></City>
+          <City v-model:address="address"></City>
         </ion-item>
         <ion-item>
           <SearchButton @click="search()" :required-fields="[address, treatment]"></SearchButton>
@@ -80,22 +80,19 @@ const searchMode: Ref<number> = ref(30)
 
 const currentLocation: Ref<Localization | undefined> = ref(undefined)
 
-function updateLocalization() {
-  cityToLocalization(address.value)
-  .then(val => {
-    console.log(val)
-    currentLocation.value = val
-  })
-}
 
-function search() {
+async function search() {
   loading.value = true
   clinics.value = []
-  getClinics(currentLocation.value!, treatment.value, searchMode.value)
-    .then(value => {
+  cityToLocalization(address.value)
+    .then(val => {
+      currentLocation.value = val
+    }).then(() => {
+      return getClinics(currentLocation.value!, treatment.value, searchMode.value)
+    }).then(value => {
       loading.value = false
       clinics.value = value
-    })
+    });
 }
 
 onMounted(() => {
