@@ -27,4 +27,8 @@ function enabled(): boolean {
 
 </script>
 
-<style scoped></style>
+<style scoped>
+.full-width {
+  width: 1000px !important;
+}
+</style>

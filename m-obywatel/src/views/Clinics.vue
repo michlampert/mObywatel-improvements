@@ -104,9 +104,7 @@ onMounted(() => {
 </script>
 
 <style>
-.full-width {
-  width: 1000px !important;
-}
+
 
 ion-spinner {
   width: 4em;

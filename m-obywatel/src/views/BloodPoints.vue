@@ -13,7 +13,7 @@
     <ion-content :fullscreen="true">
       <ion-list lines="none" class="padding-top">
         <ion-item>
-          <ion-input label-placement="floating" placeholder="np. A+" v-model="blood">
+          <ion-input label-placement="floating" placeholder="np. 0 Rh-" v-model="blood">
             <div slot="label">Grupa krwi</div>
           </ion-input>
         </ion-item>
