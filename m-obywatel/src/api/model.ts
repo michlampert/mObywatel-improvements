@@ -35,3 +35,11 @@ export interface BloodPoint extends Place {
     state: number,
     subordinates: Place[],
 }
+
+// XD
+export interface PlacesCombined extends Place {
+    type?: string,
+    date?: Date,
+    state?: number,
+    subordinates?: Place[]
+}

@@ -1,8 +1,7 @@
 <template>
-    <ion-button @click="setOpen(true)" fill="clear" size="small">
-        <ion-ripple-effect></ion-ripple-effect>
-        <ion-icon :icon="notifications" size="large" style="margin-bottom: 0px" :color="on ? 'primary' : 'dark'"></ion-icon>
-    </ion-button>
+    <ion-icon @click="setOpen(true)" :icon="notifications" size="large" style="margin-bottom: 0px"
+        :color="on ? 'primary' : 'dark'"></ion-icon>
+
 
     <ion-alert :is-open="isOpen" header="Alert" :sub-header="message" :buttons="['OK']"
         @didDismiss="setOpen(false)"></ion-alert>
@@ -21,7 +20,7 @@ const props = defineProps({
 })
 
 const setOpen = (state: boolean) => {
-    if (state){
+    if (state || on.value) {
         on.value = true
         setTimeout(() => {
             isOpen.value = state
