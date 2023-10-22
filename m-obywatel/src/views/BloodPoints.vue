@@ -73,8 +73,9 @@ function search() {
   places.value = []
   getBloodPoints(currentLocation.value!, blood.value)
     .then(value => {
+      console.log(value)
       loading.value = false
-      places.value = value
+      places.value = value.filter(v => v.state)
     })
 }
 
