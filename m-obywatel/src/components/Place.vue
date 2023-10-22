@@ -69,9 +69,10 @@
             </ion-accordion-group>
         </template>
         <template v-if="place?.state">
-            <ion-card-header>
+            <ion-card-header class="with-drop">
                 <ion-card-title class="capitalize">{{ place?.name?.toLowerCase() }}, {{ Math.round(place?.distance ?? 0)
-                }}km <ion-icon :src="`../../resources/water_${place?.state}.svg`" size="large"></ion-icon></ion-card-title>
+                }}km</ion-card-title>
+                <ion-icon :src="`../../resources/water_${place?.state}.svg`" size="large"></ion-icon>
             </ion-card-header>
             <ion-accordion-group @ionChange="dispatchResize" v-if="showMap">
                 <ion-accordion value="first">
@@ -139,5 +140,11 @@ function dispatchResize() {
 
 .capitalize {
     text-transform: capitalize !important;
+}
+
+.with-drop {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 </style>
