@@ -9,6 +9,7 @@
 </template>
 <script setup lang="ts">
 import { PropType } from 'vue';
+import { IonButton, IonRippleEffect, IonText } from '@ionic/vue';
 
 
 const props = defineProps({

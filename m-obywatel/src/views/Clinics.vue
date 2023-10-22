@@ -44,11 +44,13 @@
 
       </ion-list>
 
-      <div class="center">
-        <ion-spinner v-if="loading" name="circular" size="large" color="medium"></ion-spinner>
-      </div>
-
-      <PlacesPresentation v-model:current-location="currentLocation" v-model:places="clinics"></PlacesPresentation>
+      <PlacesPresentation v-model:current-location="currentLocation" v-model:places="clinics">
+        <template v-slot:spinner>
+          <div class="center">
+            <ion-spinner v-if="loading" name="circular" size="large" color="medium"></ion-spinner>
+          </div>
+        </template>
+      </PlacesPresentation>
 
     </ion-content>
   </ion-page>
@@ -82,10 +84,10 @@ const currentLocation: Ref<Localization | undefined> = ref(undefined)
 
 function updateLocalization() {
   cityToLocalization(address.value)
-  .then(val => {
-    console.log(val)
-    currentLocation.value = val
-  })
+    .then(val => {
+      console.log(val)
+      currentLocation.value = val
+    })
 }
 
 function search() {

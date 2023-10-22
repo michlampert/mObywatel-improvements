@@ -17,12 +17,14 @@
         </ion-item>
 
       </ion-list>
-
-      <div class="center">
-        <ion-spinner v-if="loading" name="circular" size="large" color="medium"></ion-spinner>
-      </div>
-
-      <PlacesPresentation v-model:current-location="currentLocation" v-model:places="places"></PlacesPresentation>
+      
+      <PlacesPresentation v-model:current-location="currentLocation" v-model:places="places">
+        <template v-slot:spinner>
+          <div class="center">
+            <ion-spinner v-if="loading" name="circular" size="large" color="medium"></ion-spinner>
+          </div>
+        </template>
+      </PlacesPresentation>
 
     </ion-content>
   </ion-page>

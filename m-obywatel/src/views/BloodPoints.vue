@@ -1,23 +1,81 @@
 <template>
   <ion-page>
     <ion-header>
-      <ion-toolbar>
-        <ion-title>Punkty Krwiodawstwa</ion-title>
-      </ion-toolbar>
+      <Toolbar>
+        <template v-slot:name>
+          Punkty krwiodawstwa
+        </template>
+        <template v-slot:alert>
+          <Alert :message="'Twoja krew jest potrzebna!'"></Alert>
+        </template>
+      </Toolbar>
     </ion-header>
     <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Tab 4</ion-title>
-        </ion-toolbar>
-      </ion-header>
+      <ion-list lines="none" class="padding-top">
+        <ion-item>
+          <ion-input label-placement="floating" placeholder="np. A+" v-model="blood">
+            <div slot="label">Grupa krwi</div>
+          </ion-input>
+        </ion-item>
+        <ion-item>
+          <City v-model:address="address" :on-change:address="updateLocalization()"></City>
+        </ion-item>
+        <ion-item>
+          <SearchButton @click="search()" :required-fields="[address, blood]"></SearchButton>
+        </ion-item>
 
-      <ExploreContainer name="Tab 4 page" />
+      </ion-list>
+
+      <PlacesPresentation v-model:current-location="currentLocation" v-model:places="places">
+        <template v-slot:spinner>
+          <div class="center">
+            <ion-spinner v-if="loading" name="circular" size="large" color="medium"></ion-spinner>
+          </div>
+        </template>
+      </PlacesPresentation>
+
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue';
-import ExploreContainer from '@/components/ExploreContainer.vue';
+import Toolbar from '@/components/Toolbar.vue'
+import { IonPage, IonHeader, IonContent, IonSpinner } from '@ionic/vue';
+import { Ref, ref } from "vue";
+import { Localization, Place } from "@/api/model"
+import { getBloodPoints, getSORs } from "@/api/api"
+import City from "@/components/City.vue"
+import SearchButton from "@/components/SearchButton.vue";
+
+import { IonList, IonItem, IonSegment, IonSegmentButton, IonIcon, IonInput } from "@ionic/vue";
+import PlacesPresentation from "@/components/PlacesPresentation.vue";
+import { cityToLocalization } from '@/api/utils';
+import Alert from '@/components/Alert.vue';
+
+const places: Ref<Place[]> = ref([])
+const address: Ref<string> = ref("")
+const loading: Ref<boolean> = ref(false)
+const searchMode: Ref<number> = ref(30)
+const blood: Ref<string> = ref("")
+
+
+const currentLocation: Ref<Localization | undefined> = ref(undefined)
+
+function updateLocalization() {
+  cityToLocalization(address.value)
+    .then(val => {
+      currentLocation.value = val
+    })
+}
+
+function search() {
+  loading.value = true
+  places.value = []
+  getBloodPoints(currentLocation.value!, blood.value)
+    .then(value => {
+      loading.value = false
+      places.value = value
+    })
+}
+
 </script>
