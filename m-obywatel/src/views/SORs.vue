@@ -10,7 +10,7 @@
     <ion-content :fullscreen="true">
       <ion-list lines="none" class="padding-top">
         <ion-item>
-          <City v-model:address="address" :on-change:address="updateLocalization()"></City>
+          <City v-model:address="address"></City>
         </ion-item>
         <ion-item>
           <SearchButton @click="search()" :required-fields="[address]"></SearchButton>
@@ -51,21 +51,19 @@ const searchMode: Ref<number> = ref(30)
 
 const currentLocation: Ref<Localization | undefined> = ref(undefined)
 
-function updateLocalization() {
-  cityToLocalization(address.value)
-    .then(val => {
-      currentLocation.value = val
-    })
-}
-
 function search() {
   loading.value = true
   places.value = []
-  getSORs(currentLocation.value!, searchMode.value)
-    .then(value => {
-      loading.value = false
-      places.value = value
-    })
+  cityToLocalization(address.value)
+    .then(val => {
+      currentLocation.value = val
+    }).then(() => {
+      getSORs(currentLocation.value!, searchMode.value)
+        .then(value => {
+          loading.value = false
+          places.value = value
+        })
+    });
 }
 
 </script>

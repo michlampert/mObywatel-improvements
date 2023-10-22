@@ -38,21 +38,22 @@ function openModal(place: PlacesCombined) {
 }
 
 function linearFunction(x: number) {
-    const x1 = 2; // x-coordinate of the first point 2
-    const y1 = 9;  // y-coordinate of the first point 9
-    const x2 = 6; // x-coordinate of the second point
-    const y2 = 8;  // y-coordinate of the second point
-
-    // Calculate the slope (m) using the formula: m = (y2 - y1) / (x2 - x1)
-    const slope = (y2 - y1) / (x2 - x1);
-
-    // Calculate the y-intercept (b) using the formula: b = y - mx
-    const intercept = y1 - slope * x1;
-
-    // Calculate the y value using the linear function equation: y = mx + b
-    const y = slope * x + intercept;
-
-    return y;
+    if(x < 0.01) {
+        return 20;
+    } else if (x < 0.05) {
+        return 17;
+    } else if (x < 0.1) {
+        return 16;
+    } else if (x < 0.5) {
+        return 13;
+    } else if (x < 1) {
+        return 12;
+    } else if (x < 5) {
+        return 9;
+    } else if (x < 10) {
+        return 8;
+    }
+    return 6;
 }
 
 const props = defineProps({
@@ -70,7 +71,7 @@ const minimalLatitude = Math.min(props.currentLocation.latitude, ...props.otherP
 const minimalLongitude = Math.min(props.currentLocation.longitude, ...props.otherPlaces?.map(val => val.localization).map(location => location.longitude) ?? []);
 const maximalLatitude = Math.max(props.currentLocation.latitude, ...props.otherPlaces?.map(val => val.localization).map(location => location.latitude) ?? []);
 const maximalLongitude = Math.max(props.currentLocation.longitude, ...props.otherPlaces?.map(val => val.localization).map(location => location.longitude) ?? []);
-
+console.log(maximalLatitude, minimalLatitude, maximalLongitude, minimalLongitude)
 let currentLocationColor = "red";
 let zoom = linearFunction(Math.max(
     Math.abs(maximalLatitude - minimalLatitude),
