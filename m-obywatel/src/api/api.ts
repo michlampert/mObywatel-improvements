@@ -70,6 +70,8 @@ export async function getClinics(
 
     return clinics.filter((clinic: Clinic) => {
         return calculateDistanceKM(localization, clinic.localization) < maxDistanceKM;
+    }).sort((a: Clinic, b: Clinic) => {
+        return a.distance - b.distance;
     });
 }
 
