@@ -26,6 +26,14 @@ interface CoordsCSV {
 }
 
 export async function cityToLocalization(city: string): Promise<Localization> {
+    if (city === '') {
+        await new Promise(r => setTimeout(r, 2000));
+
+        return  {
+            longitude: 0,
+            latitude: 0
+        }
+    }
     let response = await fetch("src/assets/pl_coords.csv");
     let data = await response.text();
 
