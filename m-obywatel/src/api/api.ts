@@ -75,15 +75,16 @@ export async function getClinics(
     });
 }
 
+let sorResponse = await fetch("src/assets/sor_geocoded.csv");
+let sorData = await sorResponse.text();
+
+const sorResults = Papa.parse(sorData, {
+    header: true,
+});
+
+
 export async function getSORs(localization: Localization, maxDistanceKM: number = 1000): Promise<SOR[]> {
-    let response = await fetch("src/assets/sor_geocoded.csv");
-    let data = await response.text();
-
-    const results = Papa.parse(data, {
-        header: true,
-    });
-
-    let csvData = results.data as SORCSV[];
+    let csvData = sorResults.data as SORCSV[];
 
     let SORData = csvData.map((sor: SORCSV) => {
         return {
@@ -101,18 +102,22 @@ export async function getSORs(localization: Localization, maxDistanceKM: number 
 
     return SORData.filter((sor: SOR) => {
         return calculateDistanceKM(localization, sor.localization) < maxDistanceKM;
+    }).sort((a: SOR, b: SOR) => {
+        return a.distance - b.distance;
     });
 }
 
+
+let aedResponse = await fetch("src/assets/aed_poland.csv");
+let aedData = await aedResponse.text();
+
+const aedResults = Papa.parse(aedData, {
+    header: true,
+});
+
+
 export async function getAEDs(localization: Localization, maxDistanceKM: number = 1000): Promise<AED[]> {
-    let response = await fetch("src/assets/aed_poland.csv");
-    let data = await response.text();
-
-    const results = Papa.parse(data, {
-        header: true,
-    });
-
-    let csvData = results.data as AEDCSV[];
+    let csvData = aedResults.data as AEDCSV[];
 
     let AEDData = csvData.map((aed: AEDCSV) => {
         return {
@@ -133,29 +138,41 @@ export async function getAEDs(localization: Localization, maxDistanceKM: number 
 
     return AEDData.filter((aed: AED) => {
         return calculateDistanceKM(localization, aed.localization) < maxDistanceKM;
-    });
+    }).sort((a: AED, b: AED) => {
+        return a.distance - b.distance;
+    }).slice(0, 20);
 }
 
-export async function getBloodPoints(): Promise<BloodPoint[]> {
-    console.log("getBloodPoints")
+export async function getBloodPoints(localization: Localization, bloodType: string, maxDistanceKM: number = 1000): Promise<BloodPoint[]> {
     let response = await fetch("src/assets/blood.json");
     let originalData = await response.json();
-    let transformedData = {};
+
+    interface TransformedData {
+        [key: string]: {
+            [key: string]: number;
+        };
+    }
+    const transformedData: TransformedData = {};
+
     for (const bloodType in originalData) {
-        const cities = originalData[bloodType];
-        // Iterate through cities for each blood type
-        for (const city in cities) {
-          const count = cities[city];
-          // Check if the city is already in the transformedData dictionary
-          if (transformedData.hasOwnProperty(city)) {
-            // If it is, add the current blood type to the existing city entry
-            transformedData[city][bloodType] = count;
-          } else {
-            // If it's not, create a new city entry with the current blood type
-            transformedData[city] = { [bloodType]: count };
-          }
+        if (Object.prototype.hasOwnProperty.call(originalData, bloodType)) {
+            const cities = originalData[bloodType];
+            // Iterate through cities for each blood type
+            for (const city in cities) {
+                if (Object.prototype.hasOwnProperty.call(cities, city)) {
+                    const count = cities[city];
+                    // Check if the city is already in the transformedData dictionary
+                    if (transformedData.hasOwnProperty(city)) {
+                        // If it is, add the current blood type to the existing city entry
+                        transformedData[city][bloodType] = count;
+                    } else {
+                        // If it's not, create a new city entry with the current blood type
+                        transformedData[city] = { [bloodType]: count };
+                    }
+                }
+            }
         }
-      }
+    }
     const bloodPoints = await Promise.all(Object.entries(transformedData).map(async ([city, bloodTypes]) => {
         return {
             name: city,
@@ -167,14 +184,14 @@ export async function getBloodPoints(): Promise<BloodPoint[]> {
             },
             webpage: "",
             phone: "",
-            state: bloodTypes as Object,
+            state: bloodTypes[bloodType],
         };
     }));
 
-    return bloodPoints.map((bp: BloodPoint) => {
-        return {
-            ...bp
-        }
+    return bloodPoints.filter((bloodPoint: BloodPoint) => {
+        return calculateDistanceKM(localization, bloodPoint.localization) < maxDistanceKM;
+    }).sort((a: BloodPoint, b: BloodPoint) => {
+        return a.distance - b.distance;
     });
 }
 
